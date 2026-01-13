@@ -1,7 +1,6 @@
 from fastapi import FastAPI
+from app.routers.health import router as health_router
 
 app = FastAPI(title="To-Do List API")
 
-@app.get("/")
-def root():
-    return {"status": "ok", "message": "API is running"}
+app.include_router(health_router)
