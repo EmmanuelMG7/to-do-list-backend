@@ -38,28 +38,36 @@ def update_task(task_id: int, task_update: TaskUpdate):
     """
     Endpoint para actualizar una tarea existente.
 
-    Parámetros:
-    - task_id: ID de la tarea que se quiere actualizar (viene en la URL)
-    - task_update: datos a actualizar (vienen en el body)
+    Reglas de negocio:
+    - La tarea debe existir
+    - El body NO puede estar vacío
     """
-    # 1️⃣ Buscar la tarea por ID
+
+    # Convertimos el schema en un diccionario
+    # exclude_unset=True:
+    # - solo incluye los campos enviados por el cliente
+    update_data = task_update.model_dump(exclude_unset=True)
+
+    # Validación de negocio:
+    # Si el cliente no envió ningún campo → error 400
+    if not update_data:
+        raise HTTPException(
+            status_code=400,
+            detail="At least one field must be provided to update the task"
+        )
+
+    # Buscamos la tarea por ID
     for task in tasks_db:
         if task["id"] == task_id:
 
-            # 2️⃣ Convertimos el schema a dict
-            # exclude_unset=True asegura que SOLO se incluyan
-            # los campos enviados por el usuario
-            update_data = task_update.model_dump(exclude_unset=True)
-
-            # 3️⃣ Actualizamos campo por campo
+            # Actualizamos SOLO los campos enviados
             for key, value in update_data.items():
                 task[key] = value
 
-                # 4️⃣ Devolvemos la tarea actualizada
+            # Retornamos la tarea actualizada
             return task
-            
 
-    # 5️⃣ Si no se encontró la tarea, lanzamos error 404
+    # Si no se encuentra la tarea → 404
     raise HTTPException(
         status_code=404,
         detail="Task not found"
