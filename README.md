@@ -12,7 +12,7 @@ Stack Tecnológico:
 -SQLAlchemy
 -Git & GitHub
 
-Estado del proyecto: En Planificación
+Estado del proyecto: En Desarrollo
 
 
 ##  Funcionalidades
