@@ -13,3 +13,23 @@ Stack Tecnológico:
 -Git & GitHub
 
 Estado del proyecto: En Planificación
+
+
+##  Funcionalidades
+
+- Crear tareas (POST /api/v1/tasks)
+- Listar tareas (GET /api/v1/tasks)
+- Actualizar tareas (PUT /api/v1/tasks/{id})
+- Eliminar tareas (DELETE /api/v1/tasks/{id})
+
+##  Validaciones
+
+- El título es obligatorio y debe tener al menos 3 caracteres
+- No se permiten campos vacíos o inválidos
+- No se permiten actualizaciones sin datos
+- Manejo de errores 400, 404 y 422
+
+##  Documentación interactiva
+
+- Swagger UI disponible en: `/docs`
+
