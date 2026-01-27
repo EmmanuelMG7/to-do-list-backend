@@ -64,3 +64,39 @@ def update_task(task_id: int, task_update: TaskUpdate):
         status_code=404,
         detail="Task not found"
     )
+
+#################################################################
+
+@router.delete("/tasks/{task_id}", response_model=TaskResponse)
+def delete_task(task_id: int):
+    """
+    Endpoint para eliminar una tarea existente.
+
+    Parámetros:
+    - task_id: ID de la tarea a eliminar (viene desde la URL)
+
+    Respuesta:
+    - Devuelve la tarea eliminada si existe
+    - Error 404 si no se encuentra la tarea
+    """
+
+    # Recorremos la lista de tareas simulando una "base de datos"
+    for index, task in enumerate(tasks_db):
+        # Comparamos el ID de cada tarea con el ID recibido
+        if task["id"] == task_id:
+
+            # Guardamos la tarea antes de eliminarla
+            deleted_task = task
+
+            # Eliminamos la tarea de la lista usando su índice
+            tasks_db.pop(index)
+
+            # Devolvemos la tarea eliminada
+            return deleted_task
+
+    # Si el bucle termina y no se encontró la tarea,
+    # significa que el ID no existe → error 404
+    raise HTTPException(
+        status_code=404,
+        detail="Task not found"
+    )
