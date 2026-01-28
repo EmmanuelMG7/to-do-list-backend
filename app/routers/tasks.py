@@ -1,6 +1,12 @@
 from fastapi import APIRouter, HTTPException
 from app.schemas.task import TaskCreate, TaskResponse, TaskUpdate
 from typing import List
+from app.services.task_service import ( 
+    create_task as create_task_service, 
+    get_all_tasks, 
+    update_task as update_task_service,
+    delete_task as delete_task_service 
+)
 
 
 tasks_db = []
@@ -15,96 +21,87 @@ router = APIRouter(
 
 @router.post("/", response_model=TaskResponse)
 def create_task(task: TaskCreate):
-    new_task = {
-        "id": len(tasks_db) + 1,
-        "title": task.title,
-        "description": task.description,
-        "completed": False
-    }
+    """
+    Endpoint HTTP para crear una tarea.
 
-    tasks_db.append(new_task)
+    Responsabilidad:
+    - Recibir la request
+    - Llamar al service
+    - Devolver la respuesta
+    """
+
+    # Delegamos la lógica de negocio al service
+    new_task = create_task_service(task)
+
+    # El router solo devuelve la respuesta
     return new_task
 
 #################################################################
 
 @router.get("/", response_model=List[TaskResponse])
 def get_tasks():
-    return tasks_db
+    """
+    Endpoint HTTP para listar todas las tareas.
+
+    Responsabilidad:
+    - Llamar al service
+    - Retornar la lista de tareas
+    """
+
+    tasks = get_all_tasks()
+    return tasks
 
 #################################################################
 
 @router.put("/tasks/{task_id}", response_model=TaskResponse)
 def update_task(task_id: int, task_update: TaskUpdate):
     """
-    Endpoint para actualizar una tarea existente.
+    Endpoint HTTP para actualizar una tarea existente.
 
-    Reglas de negocio:
-    - La tarea debe existir
-    - El body NO puede estar vacío
+    Responsabilidades del router:
+    - Recibir parámetros HTTP
+    - Llamar al service
+    - Traducir errores de negocio a errores HTTP
     """
 
-    # Convertimos el schema en un diccionario
-    # exclude_unset=True:
-    # - solo incluye los campos enviados por el cliente
-    update_data = task_update.model_dump(exclude_unset=True)
+    try:
+        # Delegamos TODA la lógica de actualización al service
+        updated_task = update_task_service(task_id, task_update)
 
-    # Validación de negocio:
-    # Si el cliente no envió ningún campo → error 400
-    if not update_data:
+        # Si todo salió bien, devolvemos la tarea actualizada
+        return updated_task
+
+    except ValueError:
+        # El service NO encontró la tarea
+        # El router traduce ese error a HTTP 404
         raise HTTPException(
-            status_code=400,
-            detail="At least one field must be provided to update the task"
+            status_code=404,
+            detail="Task not found"
         )
-
-    # Buscamos la tarea por ID
-    for task in tasks_db:
-        if task["id"] == task_id:
-
-            # Actualizamos SOLO los campos enviados
-            for key, value in update_data.items():
-                task[key] = value
-
-            # Retornamos la tarea actualizada
-            return task
-
-    # Si no se encuentra la tarea → 404
-    raise HTTPException(
-        status_code=404,
-        detail="Task not found"
-    )
 
 #################################################################
 
 @router.delete("/tasks/{task_id}", response_model=TaskResponse)
 def delete_task(task_id: int):
     """
-    Endpoint para eliminar una tarea existente.
+    Endpoint HTTP para eliminar una tarea.
 
-    Parámetros:
-    - task_id: ID de la tarea a eliminar (viene desde la URL)
-
-    Respuesta:
-    - Devuelve la tarea eliminada si existe
-    - Error 404 si no se encuentra la tarea
+    Responsabilidades del router:
+    - Recibir el ID desde la URL
+    - Llamar al service
+    - Traducir errores de negocio a HTTP
     """
 
-    # Recorremos la lista de tareas simulando una "base de datos"
-    for index, task in enumerate(tasks_db):
-        # Comparamos el ID de cada tarea con el ID recibido
-        if task["id"] == task_id:
+    try:
+        # Delegamos el borrado al service
+        deleted_task = delete_task_service(task_id)
 
-            # Guardamos la tarea antes de eliminarla
-            deleted_task = task
+        # Retornamos la tarea eliminada
+        return deleted_task
 
-            # Eliminamos la tarea de la lista usando su índice
-            tasks_db.pop(index)
-
-            # Devolvemos la tarea eliminada
-            return deleted_task
-
-    # Si el bucle termina y no se encontró la tarea,
-    # significa que el ID no existe → error 404
-    raise HTTPException(
-        status_code=404,
-        detail="Task not found"
-    )
+    except ValueError:
+        # Si el service no encuentra la tarea
+        raise HTTPException(
+            status_code=404,
+            detail="Task not found"
+        )
