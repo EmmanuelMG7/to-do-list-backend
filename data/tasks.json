@@ -1,0 +1,14 @@
+[
+    {
+        "id": 2,
+        "title": "Estudiar Python",
+        "description": "Curso Python",
+        "completed": true
+    },
+    {
+        "id": 3,
+        "title": "Album de recuerdos",
+        "description": "Investigar sobre el album de recuerdos",
+        "completed": false
+    }
+]
