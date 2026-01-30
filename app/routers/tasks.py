@@ -8,9 +8,6 @@ from app.services.task_service import (
     delete_task as delete_task_service 
 )
 
-
-tasks_db = []
-
 #################################################################
 
 router = APIRouter(
@@ -53,7 +50,7 @@ def get_tasks():
 
 #################################################################
 
-@router.put("/tasks/{task_id}", response_model=TaskResponse)
+@router.put("/{task_id}", response_model=TaskResponse)
 def update_task(task_id: int, task_update: TaskUpdate):
     """
     Endpoint HTTP para actualizar una tarea existente.
@@ -81,7 +78,7 @@ def update_task(task_id: int, task_update: TaskUpdate):
 
 #################################################################
 
-@router.delete("/tasks/{task_id}", response_model=TaskResponse)
+@router.delete("/{task_id}", response_model=TaskResponse)
 def delete_task(task_id: int):
     """
     Endpoint HTTP para eliminar una tarea.

@@ -9,6 +9,6 @@
         "id": 3,
         "title": "Album de recuerdos",
         "description": "Investigar sobre el album de recuerdos",
-        "completed": false
+        "completed": true
     }
 ]
