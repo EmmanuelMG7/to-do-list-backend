@@ -4,6 +4,10 @@ from app.routers import health, tasks
 
 from app.models.task_model import Task
 
+from app.database.connection import engine, Base
+
+Base.metadata.create_all(bind=engine)
+
 
 app = FastAPI(
     title="To-Do List Backend",
