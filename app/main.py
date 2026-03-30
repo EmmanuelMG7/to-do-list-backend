@@ -1,13 +1,11 @@
 from fastapi import FastAPI
 
 from app.routers import health, tasks
-
 from app.models.task_model import Task
-
 from app.database.connection import engine, Base
 
+# Create database tables (only for development)
 Base.metadata.create_all(bind=engine)
-
 
 app = FastAPI(
     title="To-Do List Backend",
@@ -15,6 +13,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Registrar routers
+# Register routers
 app.include_router(health.router)
 app.include_router(tasks.router)
