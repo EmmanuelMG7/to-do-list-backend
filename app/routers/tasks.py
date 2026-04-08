@@ -8,6 +8,11 @@ from app.services.task_service import (
     delete_task as delete_task_service 
 )
 
+from fastapi import Depends
+from sqlalchemy.orm import Session
+
+from app.database.connection import get_db
+from app.repositories.sqlalchemy_task_repository import SQLAlchemyTaskRepository
 #################################################################
 
 router = APIRouter(
@@ -17,88 +22,46 @@ router = APIRouter(
 #################################################################
 
 @router.post("/", response_model=TaskResponse)
-def create_task(task: TaskCreate):
-    """
-    Endpoint HTTP para crear una tarea.
-
-    Responsabilidad:
-    - Recibir la request
-    - Llamar al service
-    - Devolver la respuesta
-    """
-
-    # Delegamos la lógica de negocio al service
-    new_task = create_task_service(task)
-
-    # El router solo devuelve la respuesta
+def create_task(
+    task: TaskCreate,
+    db: Session = Depends(get_db)
+):
+    repository = SQLAlchemyTaskRepository(db)
+    new_task = create_task_service(task, repository)
     return new_task
 
 #################################################################
 
 @router.get("/", response_model=List[TaskResponse])
-def get_tasks():
-    """
-    Endpoint HTTP para listar todas las tareas.
-
-    Responsabilidad:
-    - Llamar al service
-    - Retornar la lista de tareas
-    """
-
-    tasks = get_all_tasks()
-    return tasks
+def get_tasks(db: Session = Depends(get_db)):
+    repository = SQLAlchemyTaskRepository(db)
+    return get_all_tasks(repository)
 
 #################################################################
 
 @router.put("/{task_id}", response_model=TaskResponse)
-def update_task(task_id: int, task_update: TaskUpdate):
-    """
-    Endpoint HTTP para actualizar una tarea existente.
-
-    Responsabilidades del router:
-    - Recibir parámetros HTTP
-    - Llamar al service
-    - Traducir errores de negocio a errores HTTP
-    """
+def update_task(
+    task_id: int,
+    task_update: TaskUpdate,
+    db: Session = Depends(get_db)
+):
+    repository = SQLAlchemyTaskRepository(db)
 
     try:
-        # Delegamos TODA la lógica de actualización al service
-        updated_task = update_task_service(task_id, task_update)
-
-        # Si todo salió bien, devolvemos la tarea actualizada
-        return updated_task
-
+        return update_task_service(task_id, task_update, repository)
     except ValueError:
-        # El service NO encontró la tarea
-        # El router traduce ese error a HTTP 404
-        raise HTTPException(
-            status_code=404,
-            detail="Task not found"
-        )
+        raise HTTPException(status_code=404, detail="Task not found")
 
 #################################################################
 
 @router.delete("/{task_id}", response_model=TaskResponse)
-def delete_task(task_id: int):
-    """
-    Endpoint HTTP para eliminar una tarea.
-
-    Responsabilidades del router:
-    - Recibir el ID desde la URL
-    - Llamar al service
-    - Traducir errores de negocio a HTTP
-    """
+def delete_task(
+    task_id: int,
+    db: Session = Depends(get_db)
+):
+    repository = SQLAlchemyTaskRepository(db)
 
     try:
-        # Delegamos el borrado al service
-        deleted_task = delete_task_service(task_id)
-
-        # Retornamos la tarea eliminada
-        return deleted_task
-
+        return delete_task_service(task_id, repository)
     except ValueError:
-        # Si el service no encuentra la tarea
-        raise HTTPException(
-            status_code=404,
-            detail="Task not found"
-        )
+        raise HTTPException(status_code=404, detail="Task not found")
