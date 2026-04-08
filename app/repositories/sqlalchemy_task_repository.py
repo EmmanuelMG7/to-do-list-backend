@@ -50,10 +50,12 @@ class SQLAlchemyTaskRepository(TaskRepository):
         if not task:
             raise ValueError("Task not found")
 
+        deleted_task = self._to_dict(task)
+
         self.db.delete(task)
         self.db.commit()
 
-        return {"message": "Task deleted"}
+        return deleted_task
     
     def _to_dict(self, task: Task) -> Dict:
         return {
