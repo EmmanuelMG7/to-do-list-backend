@@ -13,6 +13,10 @@ class TaskCreate(BaseModel):
     title: str
     description: Optional[str] = None
 
+    model_config = {
+    "extra": "forbid"
+    }
+
     #Validador de 'title' 
 
     @field_validator("title")
