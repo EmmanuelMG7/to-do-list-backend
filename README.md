@@ -57,7 +57,7 @@ Se implementa el patrón **Repository**, lo que permite cambiar fácilmente el m
 
 Disponible en:
 
-```
+```url
 http://127.0.0.1:8000/docs
 ```
 
@@ -85,7 +85,7 @@ http://127.0.0.1:8000/docs
 
 ## Estructura del proyecto
 
-```
+```text
 app/
 ├── routers/
 ├── services/
