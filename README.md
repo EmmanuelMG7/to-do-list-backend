@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Backend API REST para la gestión de tareas (To-Do List), desarrollada con **Python y FastAPI**, aplicando principios de arquitectura limpia y el patrón **Repository** para desacoplar la lógica de negocio de la persistencia.
+Backend API REST para la gestión de tareas (To-Do List), desarrollada con **Python y FastAPI**.
 
 Este proyecto fue construido siguiendo la metodología **Scrum**, simulando un entorno profesional de desarrollo con sprints, backlog y documentación técnica.
 
@@ -53,15 +53,17 @@ Se implementa el patrón **Repository**, lo que permite cambiar fácilmente el m
 
 ---
 
-## 📚 Documentación interactiva
+## Documentación interactiva
 
 Disponible en:
 
+```
 http://127.0.0.1:8000/docs
+```
 
 ---
 
-## 🔗 Endpoints principales
+## Endpoints principales
 
 | Método | Endpoint           | Descripción      |
 | ------ | ------------------ | ---------------- |
@@ -72,7 +74,7 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## 🔮 Futuras mejoras
+## Futuras mejoras
 
 * Migración a PostgreSQL
 * Implementación de autenticación (JWT)
@@ -81,7 +83,7 @@ http://127.0.0.1:8000/docs
 
 ---
 
-## 📁 Estructura del proyecto
+## Estructura del proyecto
 
 ```
 app/
@@ -96,6 +98,6 @@ app/
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
-Proyecto desarrollado como parte de portafolio backend.
+Proyecto desarrollado como parte de portafolio backend por Emmanuel Mora Grajales
