@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Backend API REST para la gestión de tareas (To-Do List), desarrollada con **Python y FastAPI**, aplicando principios de arquitectura limpia y el patrón **Repository** para desacoplar la lógica de negocio de la persistencia.
+Backend API REST para la gestión de tareas (To-Do List), desarrollada con **Python y FastAPI**.
 
 Este proyecto fue construido siguiendo la metodología **Scrum**, simulando un entorno profesional de desarrollo con sprints, backlog y documentación técnica.
 
